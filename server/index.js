@@ -3,6 +3,7 @@ import cors from "cors";
 import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
 import { connectDB } from "./utils/dbconfig.js";
+import uploadRoutes from "./routers/upload.routes.js";
 
 dotenv.config();
 
@@ -27,6 +28,4 @@ connectDB().then(()=>{
     }
 })
 
-app.get("/", (req, res) => {
-  res.send("Hello, World!");
-});
+app.use("/api/v1", uploadRoutes)
