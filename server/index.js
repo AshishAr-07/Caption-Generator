@@ -5,6 +5,7 @@ import cookieParser from "cookie-parser";
 import { connectDB } from "./utils/dbconfig.js";
 import uploadRoutes from "./routers/upload.routes.js";
 import authRoutes from "./routers/auth.routes.js";
+import speechToTextRoutes from "./routers/speechtotext.routes.js";
 
 dotenv.config();
 
@@ -38,3 +39,4 @@ connectDB().then(() => {
 
 app.use("/api/v1", uploadRoutes);
 app.use("/api/v1/auth", authRoutes);
+app.use("/api/v1/transcribe", speechToTextRoutes);
