@@ -70,8 +70,10 @@ export const AuthProvider = ({ children }) => {
   const logout = async () => {
     try {
       // Call logout endpoint to clear the cookie
-      const res =await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/auth/logout`);
-      if(res.data.success){
+      const res = await axios.post(
+        `${process.env.NEXT_PUBLIC_API_URL}/auth/logout`,
+      );
+      if (res.data.success) {
         console.log("Logout successful");
         toast.success(res.data.message || "Logged out successfully");
       }
@@ -97,7 +99,7 @@ export const AuthProvider = ({ children }) => {
   // }
 
   return (
-    <AuthContext.Provider value={[auth, setAuth, { login, logout }]}>
+    <AuthContext.Provider value={[auth, setAuth, { login, logout }, loading]}>
       {children}
     </AuthContext.Provider>
   );

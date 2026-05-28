@@ -14,7 +14,7 @@ export const verifyJwt = async (req, res, next) => {
       });
     }
 
-    const decoded =  await jwt.verify(token, process.env.JWT_SECRET);
+    const decoded =  await jwt.verify(token, process.env.JWT_SECRET_KEY);
     const user = await User.findOne({ email: decoded.email }).select(
       "-password"
     );

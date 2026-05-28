@@ -9,7 +9,7 @@ import { upload } from "../middlewares/multer.middlewares.js";
 const router = express.Router();
 
 router.post(
-  "/transcribe",
+  "/audio",
   verifyJwt,
   upload.single("audio"),
   transcribeAudioController,
