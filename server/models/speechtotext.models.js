@@ -10,16 +10,11 @@ const transcriptSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    text: {
+    transcription: {
       type: String,
       required: true,
-      trim: true,
 
       default: "[No clear speech or audio detected]",
-    },
-    duration: {
-      type: Number,
-      default: 0,
     },
     user: {
       type: mongoose.Schema.Types.ObjectId,
