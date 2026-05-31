@@ -1,9 +1,18 @@
 import multer from "multer";
 import path from "path";
+import fs from "fs";
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, "./public");
+    // Force an absolute path calculation based on the project's root folder
+    const uploadDir = path.resolve(process.cwd(), "public");
+
+    // Dynamically check and create the folder if production stripped it out
+    if (!fs.existsSync(uploadDir)) {
+      fs.mkdirSync(uploadDir, { recursive: true });
+    }
+
+    cb(null, uploadDir);
   },
   filename: function (req, file, cb) {
     const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
@@ -35,6 +44,6 @@ export const upload = multer({
   },
 
   limits: {
-    fileSize: 10 * 1024 * 1024,
+    fileSize: 10 * 1024 * 1024, // 10MB limit
   },
 });
