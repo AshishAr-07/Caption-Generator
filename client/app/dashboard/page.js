@@ -3,6 +3,91 @@
 import { useEffect, useRef, useState } from "react";
 import axios from "axios";
 
+// Sub-component to manage copy state individually for each transcript card
+function TranscriptItem({ item }) {
+  const [copied, setCopied] = useState(false);
+
+  const handleCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(item.transcription);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch (err) {
+      console.error("Failed to copy text: ", err);
+    }
+  };
+
+  return (
+    <div className="bg-white border border-gray-100 rounded-xl px-5 py-4 relative group">
+      <div className="flex items-center justify-between gap-4 mb-3">
+        <span className="text-sm font-medium text-gray-800 truncate">
+          {item.originalName || item.filename}
+        </span>
+        <div className="flex items-center gap-3 shrink-0">
+          <button
+            onClick={handleCopy}
+            className={`flex items-center gap-1.5 text-xs font-medium px-2.5 py-1 rounded-md transition-all ${
+              copied
+                ? "bg-green-50 text-green-600 border border-green-100"
+                : "text-gray-500 hover:bg-gray-100 border border-transparent"
+            }`}
+            title="Copy transcription"
+          >
+            {copied ? (
+              <>
+                <svg
+                  width="14"
+                  height="14"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M4.5 12.75l6 6 9-13.5"
+                  />
+                </svg>
+                <span>Copied!</span>
+              </>
+            ) : (
+              <>
+                <svg
+                  width="14"
+                  height="14"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.5"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 01-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 011.5.124m7.5 10.376A8.965 8.965 0 0012 12.75c-.497 0-.982.04-1.455.12l-.179.032m7.374.738a8.951 8.951 0 01-.738 3.374m1.74-3.374a8.954 8.954 0 00-2.288-4.064M13.5 8.25v10.5m0-10.5h1.125c.621 0 1.125.504 1.125 1.125v1.125m-2.25-2.25h-1.5m1.5 13.5a9.06 9.06 0 01-1.5-.124m0 0a8.965 8.965 0 01-2.288-4.064M13.5 18.75h-1.5m-3 0a1.125 1.125 0 01-1.125-1.125V16.5m0-3.75V9"
+                  />
+                </svg>
+                <span>Copy</span>
+              </>
+            )}
+          </button>
+          <span className="text-xs text-gray-400">
+            {new Date(item.createdAt).toLocaleString(undefined, {
+              month: "short",
+              day: "numeric",
+              hour: "2-digit",
+              minute: "2-digit",
+            })}
+          </span>
+        </div>
+      </div>
+      <p className="text-sm text-gray-700 bg-gray-50 rounded-lg px-4 py-3 leading-relaxed whitespace-pre-wrap">
+        {item.transcription}
+      </p>
+    </div>
+  );
+}
+
 export default function SpeechToTextPage() {
   const [file, setFile] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -198,27 +283,7 @@ export default function SpeechToTextPage() {
         ) : (
           <div className="space-y-3">
             {transcripts.map((item) => (
-              <div
-                key={item._id}
-                className="bg-white border border-gray-100 rounded-xl px-5 py-4"
-              >
-                <div className="flex items-center justify-between gap-4 mb-3">
-                  <span className="text-sm font-medium text-gray-800 truncate">
-                    {item.originalName || item.filename}
-                  </span>
-                  <span className="text-xs text-gray-400 shrink-0">
-                    {new Date(item.createdAt).toLocaleString(undefined, {
-                      month: "short",
-                      day: "numeric",
-                      hour: "2-digit",
-                      minute: "2-digit",
-                    })}
-                  </span>
-                </div>
-                <p className="text-sm text-gray-700 bg-gray-50 rounded-lg px-4 py-3 leading-relaxed">
-                  {item.transcription}
-                </p>
-              </div>
+              <TranscriptItem key={item._id} item={item} />
             ))}
           </div>
         )}
